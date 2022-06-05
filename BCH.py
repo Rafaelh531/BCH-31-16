@@ -141,18 +141,30 @@ quotient, remainder = np.polydiv(list_to_poly(vx), list_to_poly(m5))
 s5x = poly_to_list(remainder)
 s5x = [1 if x % 2 == 1 else 0 for x in s5x]
 
-tmp = s3x.copy()
-s3a = [0,0,0,0,0]
-for i in range(len(tmp)-1):
-    tmp[i] = s3x[i]*3* (len(tmp)-i-1)
-    print(tmp[i])
-    print(field[tmp[i]+1])
-    #print(s3a)
-    if(tmp[i] != 0):
-        s3a = [sum(value) for value in zip(s3a, field[tmp[i]+1])]
-if(s3x[len(s3x)-1]==1):
-    s3a[len(s3x)-1] = 1        
-s3a = [1 if x % 2 == 1 else 0 for x in s3a]
+tmp = s1x.copy()
 
+sindromes_x = []
+sindromes_x.append(s1x)
+sindromes_x.append(s2x)
+sindromes_x.append(s3x)
+sindromes_x.append(s4x)
+sindromes_x.append(s5x)
+sindromes_x.append(s6x)
+
+sindromes_a = []
+
+
+for index,sindrome in enumerate(sindromes_x):
+    print(index,sindrome)
+    tmp = sindrome.copy()
+    s = [0,0,0,0,0]
+    for i in range(len(tmp)-1):
+        tmp[i] = sindromes_x[index][i] *(index+1)* (len(tmp)-i-1)
+        if(tmp[i] != 0):
+            s = [sum(value) for value in zip(s, field[tmp[i]+1])]
+    if(sindromes_x[index][len(s1x)-1]==1):
+        s[len(sindromes_x[index])-1] = 1        
+    s = [1 if x % 2 == 1 else 0 for x in s]
+    sindromes_a.append(s)    
 
 
