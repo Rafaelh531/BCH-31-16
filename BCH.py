@@ -57,8 +57,22 @@ def field_multiplication(lst1, lst2, primitive):
             tmp_gx.append(0)
         checkbits = bin_to_list(list_to_bin(checkbits) ^ list_to_bin(tmp_gx))
         tmp_gx = primitive.copy()
+    #print(checkbits)
     return checkbits
 
+def field_mod(lst1,lst2):
+     # Função que faz multiplicação em campos finitos
+     #tmp = poly_to_list(np.polymul(list_to_poly(lst1), list_to_poly(lst2)))
+     #tmp = [1 if x % 2 == 1 else 0 for x in tmp]
+     checkbits = lst1.copy()
+     tmp_gx = lst2.copy()
+     while(len(checkbits) >= len(lst2)):
+         while(len(tmp_gx) != len(checkbits) - checkbits.index(1)):
+             tmp_gx.append(0)
+         checkbits = bin_to_list(list_to_bin(checkbits) ^ list_to_bin(tmp_gx))
+         tmp_gx = lst2.copy()
+     #print(checkbits)
+     return checkbits
 
 def field_addiction(lst1, lst2):
     # Função que faz adição em campos finitos
@@ -71,7 +85,7 @@ def field_addiction(lst1, lst2):
 
 def field_inverse(lst1):
     # Função que calcula inverso em campos finitos
-    for i in range(2, 32):
+    for i in range(1, 32):
         r = field_multiplication(lst1, field[i], primitive)
         if r == [1]:
             return field[i]
@@ -81,7 +95,7 @@ def find_exp(lst1):
     # Função que retorna o expoente de alpha a partir de uma lista
     while(len(lst1) != 5):
         lst1.insert(0, 0)
-    for i in range(2, 32):
+    for i in range(1, 32):
         if lst1 == field[i]:
             return i-1
 
@@ -168,9 +182,13 @@ print("-------------------------------------")
 
 # DECODIFICAÇÃO
 
+# ****************************************************************************
 # bits que mudaram seu estado durante o envio
 # (Esquerda para direita)
 changed_bits = [4, 9, 22]
+
+# ****************************************************************************
+
 
 recebido = msg.copy()
 
@@ -183,6 +201,7 @@ recebido = list_to_bin(recebido)
 
 # Vx é a mensagem recebida
 vx = bin_to_list(recebido)
+vb = vx.copy()
 print("Pacote recebido:")
 print(bin(list_to_bin(vx))[2:].zfill(31))
 
@@ -215,10 +234,13 @@ minimal_polys.append(m3)
 sindromes_x = []
 for i in range(6):
 
-    quotient, remainder = np.polydiv(list_to_poly(vx),
-                                     list_to_poly(minimal_polys[i]))
-    s1x = poly_to_list(remainder)
+    #quotient, remainder = np.polydiv(list_to_poly(vx),
+    #                                 list_to_poly(minimal_polys[i]))
+    #s1x = poly_to_list(remainder)
+    s1x = field_mod(vx,minimal_polys[i])
     s1x = [1 if x % 2 == 1 else 0 for x in s1x]
+    while(len(s1x) <5):
+        s1x.insert(0,0)
     sindromes_x.append(s1x)
 
 # Calcula as 6 expressoes das sindromes em função de alpha são obtidas
@@ -253,6 +275,8 @@ d_up1 = field_addiction(sindromes_a[2],
                             primitive))
 
 # PARA U = 1
+print(d_up1)
+print(field_inverse(sindromes_a[0]))
 sigma[1] = find_exp(field_multiplication(d_up1,
                                          field_inverse(sindromes_a[0]),
                                          primitive))
