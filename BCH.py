@@ -46,6 +46,51 @@ def list_to_poly(x):
     return np.poly1d(x)
 
 
+def field_multiplication(lst1, lst2, primitive):
+    # Função que faz multiplicação em campos finitos
+    tmp = poly_to_list(np.polymul(list_to_poly(lst1), list_to_poly(lst2)))
+    tmp = [1 if x % 2 == 1 else 0 for x in tmp]
+    checkbits = tmp.copy()
+    tmp_gx = primitive.copy()
+    while(len(checkbits) >= len(primitive)):
+        while(len(tmp_gx) != len(checkbits) - checkbits.index(1)):
+            tmp_gx.append(0)
+        checkbits = bin_to_list(list_to_bin(checkbits) ^ list_to_bin(tmp_gx))
+        tmp_gx = primitive.copy()
+    return checkbits
+
+
+def field_addiction(lst1, lst2):
+    # Função que faz adição em campos finitos
+    tmp = bin_to_list(list_to_bin(lst1) ^ list_to_bin(lst2))
+    tmp = [1 if x % 2 == 1 else 0 for x in tmp]
+    while(len(tmp) != 5):
+        tmp.insert(0, 0)
+    return (tmp)
+
+
+def field_inverse(lst1):
+    # Função que calcula inverso em campos finitos
+    for i in range(2, 32):
+        r = field_multiplication(lst1, field[i], primitive)
+        if r == [1]:
+            return field[i]
+
+
+def find_exp(lst1):
+    # Função que retorna o expoente de alpha a partir de uma lista
+    while(len(lst1) != 5):
+        lst1.insert(0, 0)
+    for i in range(2, 32):
+        if lst1 == field[i]:
+            return i-1
+
+
+def lst_by_alpha(x):
+    # Função que retorna a lista correspondente ao expoente de alph
+    return field[x+1]
+
+
 def create_field(field):
     # Cria o field de 32 elementos
     field = []
@@ -191,50 +236,6 @@ for index, sindrome in enumerate(sindromes_x):
     s = [1 if x % 2 == 1 else 0 for x in s]
     sindromes_a.append(s)
 
-
-def field_multiplication(lst1, lst2, primitive):
-    # Função que faz multiplicação em campos finitos
-    tmp = poly_to_list(np.polymul(list_to_poly(lst1), list_to_poly(lst2)))
-    tmp = [1 if x % 2 == 1 else 0 for x in tmp]
-    checkbits = tmp.copy()
-    tmp_gx = primitive.copy()
-    while(len(checkbits) >= len(primitive)):
-        while(len(tmp_gx) != len(checkbits) - checkbits.index(1)):
-            tmp_gx.append(0)
-        checkbits = bin_to_list(list_to_bin(checkbits) ^ list_to_bin(tmp_gx))
-        tmp_gx = primitive.copy()
-    return checkbits
-
-
-def field_addiction(lst1, lst2):
-    # Função que faz adição em campos finitos
-    tmp = bin_to_list(list_to_bin(lst1) ^ list_to_bin(lst2))
-    tmp = [1 if x % 2 == 1 else 0 for x in tmp]
-    while(len(tmp) != 5):
-        tmp.insert(0, 0)
-    return (tmp)
-
-
-def field_inverse(lst1):
-    # Função que calcula inverso em campos finitos
-    for i in range(2, 32):
-        r = field_multiplication(lst1, field[i], primitive)
-        if r == [1]:
-            return field[i]
-
-
-def find_exp(lst1):
-    # Função que retorna o expoente de alpha a partir de uma lista
-    while(len(lst1) != 5):
-        lst1.insert(0, 0)
-    for i in range(2, 32):
-        if lst1 == field[i]:
-            return i-1
-
-
-def lst_by_alpha(x):
-    # Função que retorna a lista correspondente ao expoente de alph
-    return field[x+1]
 
 # COMEÇA A PREENCHER A TABELA DE DECODIFICAÇÃO
 
