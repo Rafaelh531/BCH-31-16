@@ -145,11 +145,24 @@ gx = poly_to_list(gx_temp)
 # As potencias de g(x) que tem valor par são zeradas
 gx = [1 if x % 2 == 1 else 0 for x in gx]
 
+
+
 # Informação a ser enviada
 word = 0b1000001
 print("Palavra a ser enviada:")
 print(bin(word))
 information = bin_to_list(word)
+
+gerador = ""
+for i in range(len(gx)):
+    if(gx[i] == 1):
+        gerador += "x^" + str(len(gx)- i-1)
+        gerador += " "
+
+print("-------------------------------------")
+print("Polinomio gerador:")
+print(gerador)
+print("-------------------------------------")
 
 # Preenche a informação até ficar do tamanho do pacote de 16 bits
 while len(information) != 16:
