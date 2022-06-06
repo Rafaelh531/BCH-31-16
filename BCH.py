@@ -123,6 +123,14 @@ def create_field(field):
         p2 = p2 << 1
     return field
 
+def field_pot(lst1,potencia,primitive):
+    if(potencia ==0):
+        return [0,0,0,0,1]
+    ss = lst1.copy()
+    for i in range(potencia-1):
+        ss = field_multiplication(ss, lst1, primitive)
+    return ss
+
 
 # Define o polinomio primitivo
 primitive = [1, 0, 0, 1, 0, 1]
@@ -198,8 +206,15 @@ print("-------------------------------------")
 # ****************************************************************************
 # bits que mudaram seu estado durante o envio
 # (Esquerda para direita)
-changed_bits = [4, 9, 22]
+changed_bits = [1,13,31]
 
+
+err_bit = ""
+for i in range(len(changed_bits)):
+    err_bit += str(changed_bits[i]) + " "
+
+print("BITS TROCADOS = " + err_bit)   
+print("-------------------------------------")     
 # ****************************************************************************
 
 
@@ -259,17 +274,15 @@ for i in range(6):
 # Calcula as 6 expressoes das sindromes em função de alpha são obtidas
 # substituindo alpha^n na sindrome(x) encontrada anteriormente
 sindromes_a = []
-for index, sindrome in enumerate(sindromes_x):
+for index, sindrome in enumerate(sindromes_x): # itera os sindromes_x de 0 a 5
     tmp = sindrome.copy()
-    s = [0, 0, 0, 0, 0]
-    for i in range(len(tmp)-1):
-        tmp[i] = sindromes_x[index][i] * (index+1) * (len(tmp)-i-1)
-        if(tmp[i] != 0):
-            s = [sum(value) for value in zip(s, field[tmp[i]+1])]
-    if(sindromes_x[index][len(s1x)-1] == 1):
-        s[len(sindromes_x[index])-1] = 1
-    s = [1 if x % 2 == 1 else 0 for x in s]
+    s = [0,0,0,0,0]
+    for i in range(1,6): # de 0 a 4 itera cada elemento da sindrome x
+        if(sindrome[i-1]!=0):
+            s = field_addiction(s,field_pot(lst_by_alpha(index+1),5-i,primitive))
     sindromes_a.append(s)
+    #print(s)
+    #print(find_exp(s))
 
 
 # COMEÇA A PREENCHER A TABELA DE DECODIFICAÇÃO
