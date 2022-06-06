@@ -275,11 +275,11 @@ d_up1 = field_addiction(sindromes_a[2],
                             primitive))
 
 # PARA U = 1
-print(d_up1)
-print(field_inverse(sindromes_a[0]))
+
 sigma[1] = find_exp(field_multiplication(d_up1,
                                          field_inverse(sindromes_a[0]),
                                          primitive))
+
 d_up2 = field_addiction(sindromes_a[4],
                         field_multiplication(
                             lst_by_alpha(sigma[2]), sindromes_a[3],
@@ -292,7 +292,7 @@ d_up2 = field_addiction(d_up2,
 # PARA U = 2
 tmp = field_multiplication(d_up2, field_inverse(d_up1), primitive)  # alpha25
 
-sigma[0] = sigma[0] + find_exp(
+sigma[0] =  find_exp(
     field_multiplication(tmp, lst_by_alpha(sigma[2]), primitive))
 
 sigma[1] = find_exp(field_addiction(lst_by_alpha(sigma[1]), tmp))
