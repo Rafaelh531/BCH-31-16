@@ -2,6 +2,12 @@
 """
 Created on Thu Jun  2 22:23:49 2022
 
+IMPLEMENTAÇÃO DE UM ALGORITMO DE CODIFICAÇÃO E DECODIFICAÇÃO BCH 31-16
+CAPAZ DE CORRIGIR 3 ERROS EM UMA MENSAGEM
+(bits trocados na linha 215)
+Professor: Mauricio Menon
+
+Alunos: Rafael da Rosa, Bruno Santos, Samuel Bender
 @author: RHR
 """
 
